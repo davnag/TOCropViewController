@@ -576,18 +576,29 @@ static const CGFloat kTOCropViewControllerToolbarHeight = 44.0f;
     
     //Prepare the localized options
 	NSString *cancelButtonTitle = NSLocalizedStringFromTableInBundle(@"Cancel", @"TOCropViewControllerLocalizable", resourceBundle, nil);
-	NSString *originalButtonTitle = NSLocalizedStringFromTableInBundle(@"Original", @"TOCropViewControllerLocalizable", resourceBundle, nil);
-	NSString *squareButtonTitle = NSLocalizedStringFromTableInBundle(@"Square", @"TOCropViewControllerLocalizable", resourceBundle, nil);
-    
+    NSString *originalButtonTitle = NSLocalizedStringFromTableInBundle(@"Original", @"TOCropViewControllerLocalizable", resourceBundle, nil);
+//    NSString *squareButtonTitle = NSLocalizedStringFromTableInBundle(@"Square", @"TOCropViewControllerLocalizable", resourceBundle, nil);
+
+    NSMutableArray *presents = [NSMutableArray array];
+
+    [presents addObject: @(TOCropViewControllerAspectRatioPresetOriginal)];
+    [presents addObject: @(TOCropViewControllerAspectRatioPresetSquare)];
+    [presents addObject: @(TOCropViewControllerAspectRatioPreset4x3)];
+
     //Prepare the list that will be fed to the alert view/controller
     NSMutableArray *items = [NSMutableArray array];
     [items addObject:originalButtonTitle];
-    [items addObject:squareButtonTitle];
+//    [items addObject:squareButtonTitle];
+
+    [items addObject:@"1:1"];
+
     if (verticalCropBox) {
-        [items addObjectsFromArray:@[@"2:3", @"3:5", @"3:4", @"4:5", @"5:7", @"9:16"]];
+        [items addObjectsFromArray:@[@"3:4"]];
+//        [items addObjectsFromArray:@[@"2:3", @"3:5", @"3:4", @"4:5", @"5:7", @"9:16"]];
     }
     else {
-        [items addObjectsFromArray:@[@"3:2", @"5:3", @"4:3", @"5:4", @"7:5", @"16:9"]];
+        [items addObjectsFromArray:@[@"4:3"]];
+//        [items addObjectsFromArray:@[@"3:2", @"5:3", @"4:3", @"5:4", @"7:5", @"16:9"]];
     }
     
     //Present via a UIAlertController if >= iOS 8
@@ -599,7 +610,7 @@ static const CGFloat kTOCropViewControllerToolbarHeight = 44.0f;
         NSInteger i = 0;
         for (NSString *item in items) {
             UIAlertAction *action = [UIAlertAction actionWithTitle:item style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                [self setAspectRatioPreset:(TOCropViewControllerAspectRatioPreset)i animated:YES];
+                [self setAspectRatioPreset:(TOCropViewControllerAspectRatioPreset)presents[i] animated:YES];
                 self.aspectRatioLockEnabled = YES;
             }];
             [alertController addAction:action];
