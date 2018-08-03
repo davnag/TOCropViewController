@@ -562,11 +562,12 @@ static const CGFloat kTOCropViewControllerToolbarHeight = 44.0f;
 #pragma mark - Aspect Ratio Handling -
 - (void)showAspectRatioDialog
 {
-    if (self.cropView.aspectRatioLockEnabled) {
-        self.cropView.aspectRatioLockEnabled = NO;
-        self.toolbar.clampButtonGlowing = NO;
-        return;
-    }
+    //    TODO: New property for enable/disable this function
+//    if (self.cropView.aspectRatioLockEnabled) {
+//        self.cropView.aspectRatioLockEnabled = NO;
+//        self.toolbar.clampButtonGlowing = NO;
+//        return;
+//    }
     
     //Depending on the shape of the image, work out if horizontal, or vertical options are required
     BOOL verticalCropBox = self.cropView.cropBoxAspectRatioIsPortrait;
