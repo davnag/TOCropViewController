@@ -577,7 +577,7 @@ static const CGFloat kTOCropViewControllerToolbarHeight = 44.0f;
     //Prepare the localized options
 	NSString *cancelButtonTitle = NSLocalizedStringFromTableInBundle(@"Cancel", @"TOCropViewControllerLocalizable", resourceBundle, nil);
     NSString *originalButtonTitle = NSLocalizedStringFromTableInBundle(@"Original", @"TOCropViewControllerLocalizable", resourceBundle, nil);
-//    NSString *squareButtonTitle = NSLocalizedStringFromTableInBundle(@"Square", @"TOCropViewControllerLocalizable", resourceBundle, nil);
+    NSString *squareButtonTitle = NSLocalizedStringFromTableInBundle(@"Square", @"TOCropViewControllerLocalizable", resourceBundle, nil);
 
     NSMutableArray *presents = [NSMutableArray array];
 
@@ -588,17 +588,15 @@ static const CGFloat kTOCropViewControllerToolbarHeight = 44.0f;
     //Prepare the list that will be fed to the alert view/controller
     NSMutableArray *items = [NSMutableArray array];
     [items addObject:originalButtonTitle];
-//    [items addObject:squareButtonTitle];
+    [items addObject:squareButtonTitle];
 
     [items addObject:@"1:1"];
 
     if (verticalCropBox) {
-        [items addObjectsFromArray:@[@"3:4"]];
-//        [items addObjectsFromArray:@[@"2:3", @"3:5", @"3:4", @"4:5", @"5:7", @"9:16"]];
+        [items addObjectsFromArray:@[@"2:3", @"3:5", @"3:4", @"4:5", @"5:7", @"9:16"]];
     }
     else {
-        [items addObjectsFromArray:@[@"4:3"]];
-//        [items addObjectsFromArray:@[@"3:2", @"5:3", @"4:3", @"5:4", @"7:5", @"16:9"]];
+        [items addObjectsFromArray:@[@"3:2", @"5:3", @"4:3", @"5:4", @"7:5", @"16:9"]];
     }
     
     //Present via a UIAlertController if >= iOS 8
@@ -608,9 +606,15 @@ static const CGFloat kTOCropViewControllerToolbarHeight = 44.0f;
         
         //Add each item to the alert controller
         NSInteger i = 0;
-        for (NSString *item in items) {
-            UIAlertAction *action = [UIAlertAction actionWithTitle:item style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                [self setAspectRatioPreset:(TOCropViewControllerAspectRatioPreset)presents[i] animated:YES];
+        for (NSNumber *item in presents) {
+
+            TOCropViewControllerAspectRatioPreset preset = [self aspectRatioPresetFromNumber:item];
+
+            NSString *title = [self aspectRatioPresetTitle:preset];
+
+            UIAlertAction *action = [UIAlertAction actionWithTitle:title style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+
+                [self setAspectRatioPreset: preset animated:YES];
                 self.aspectRatioLockEnabled = YES;
             }];
             [alertController addAction:action];
@@ -656,6 +660,71 @@ static const CGFloat kTOCropViewControllerToolbarHeight = 44.0f;
     self.aspectRatioLockEnabled = YES;
 }
 #endif
+
+-(NSString*)aspectRatioPresetTitle:(TOCropViewControllerAspectRatioPreset)aspectRatioPreset {
+
+    NSString *title = @"";
+
+    BOOL verticalCropBox = self.cropView.cropBoxAspectRatioIsPortrait;
+
+    NSBundle *resourceBundle = TO_CROP_VIEW_RESOURCE_BUNDLE_FOR_OBJECT(self);
+
+    switch (aspectRatioPreset) {
+        case TOCropViewControllerAspectRatioPresetOriginal:
+            title = NSLocalizedStringFromTableInBundle(@"Original", @"TOCropViewControllerLocalizable", resourceBundle, nil);
+            break;
+        case TOCropViewControllerAspectRatioPresetSquare:
+            title = NSLocalizedStringFromTableInBundle(@"Square", @"TOCropViewControllerLocalizable", resourceBundle, nil);
+            break;
+        case TOCropViewControllerAspectRatioPreset3x2:
+            title = verticalCropBox ? @"2:3" : @"3:2";
+            break;
+        case TOCropViewControllerAspectRatioPreset5x3:
+            title = verticalCropBox ? @"3:5" : @"5:3";
+            break;
+        case TOCropViewControllerAspectRatioPreset4x3:
+            title = verticalCropBox ? @"3:4" : @"4:3";
+            break;
+        case TOCropViewControllerAspectRatioPreset5x4:
+            title = verticalCropBox ? @"4:5" : @"5:4";
+            break;
+        case TOCropViewControllerAspectRatioPreset7x5:
+            title = verticalCropBox ? @"5:7" : @"7:5";
+            break;
+        case TOCropViewControllerAspectRatioPreset16x9:
+            title = verticalCropBox ? @"9:16" : @"16:9";
+            break;
+        case TOCropViewControllerAspectRatioPresetCustom:
+            title = NSLocalizedStringFromTableInBundle(@"Custom", @"TOCropViewControllerLocalizable", resourceBundle, nil);
+            break;
+    }
+
+    return title;
+}
+
+-(TOCropViewControllerAspectRatioPreset)aspectRatioPresetFromNumber:(NSNumber*)number {
+
+    switch (number.integerValue) {
+        case 1:
+            return TOCropViewControllerAspectRatioPresetSquare;
+        case 2:
+            return TOCropViewControllerAspectRatioPreset3x2;
+        case 3:
+            return TOCropViewControllerAspectRatioPreset5x3;
+        case 4:
+            return TOCropViewControllerAspectRatioPreset4x3;
+        case 5:
+            return TOCropViewControllerAspectRatioPreset5x4;
+        case 6:
+            return TOCropViewControllerAspectRatioPreset7x5;
+        case 7:
+            return TOCropViewControllerAspectRatioPreset16x9;
+        case 8:
+            return TOCropViewControllerAspectRatioPresetCustom;
+        default:
+            return TOCropViewControllerAspectRatioPresetOriginal;
+    }
+}
 
 - (void)setAspectRatioPreset:(TOCropViewControllerAspectRatioPreset)aspectRatioPreset animated:(BOOL)animated
 {
