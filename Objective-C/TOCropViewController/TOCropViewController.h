@@ -170,13 +170,20 @@
 
 /**
  If true, while it can still be resized, the crop box will be locked to its current aspect ratio.
- 
+
  If this is set to YES, and `resetAspectRatioEnabled` is set to NO, then the aspect ratio
  button will automatically be hidden from the toolbar.
- 
+
  Default is NO.
  */
 @property (nonatomic, assign) BOOL aspectRatioLockEnabled;
+
+/**
+ If true, the crop box will always be locked to its current aspect ratio.
+
+ Default is NO.
+ */
+@property (nonatomic, assign) BOOL aspectRatioAlwaysLockEnabled;
 
 /** 
  If true, tapping the reset button will also reset the aspect ratio back to the image

@@ -32,8 +32,9 @@ class ViewController: UIViewController, CropViewControllerDelegate, UIImagePicke
         //cropController.imageCropFrame = CGRect(x: 0, y: 0, width: 2848, height: 4288) //The initial frame that the crop controller will have visible.
     
         // -- Uncomment the following lines of code to test out the aspect ratio features --
-        //cropController.aspectRatioPreset = .presetSquare; //Set the initial aspect ratio as a square
-        //cropController.aspectRatioLockEnabled = true // The crop box is locked to the aspect ratio and can't be resized away from it
+        cropController.aspectRatioPreset = .presetOriginal; //Set the initial aspect ratio as a square
+        cropController.aspectRatioAlwaysLockEnabled = true
+        cropController.aspectRatioLockEnabled = true // The crop box is locked to the aspect ratio and can't be resized away from it
         //cropController.resetAspectRatioEnabled = false // When tapping 'reset', the aspect ratio will NOT be reset back to default
         //cropController.aspectRatioPickerButtonHidden = true
     

@@ -552,7 +552,7 @@ static const CGFloat kTOCropViewControllerToolbarHeight = 44.0f;
 {
     BOOL animated = (self.cropView.angle == 0);
     
-    if (self.resetAspectRatioEnabled) {
+    if (self.resetAspectRatioEnabled && self.aspectRatioAlwaysLockEnabled == NO) {
         self.aspectRatioLockEnabled = NO;
     }
     
@@ -562,13 +562,12 @@ static const CGFloat kTOCropViewControllerToolbarHeight = 44.0f;
 #pragma mark - Aspect Ratio Handling -
 - (void)showAspectRatioDialog
 {
-    //    TODO: New property for enable/disable this function
-//    if (self.cropView.aspectRatioLockEnabled) {
-//        self.cropView.aspectRatioLockEnabled = NO;
-//        self.toolbar.clampButtonGlowing = NO;
-//        return;
-//    }
-    
+    if (self.cropView.aspectRatioAlwaysLockEnabled == NO && self.cropView.aspectRatioLockEnabled) {
+        self.cropView.aspectRatioLockEnabled = NO;
+        self.toolbar.clampButtonGlowing = NO;
+        return;
+    }
+
     //Depending on the shape of the image, work out if horizontal, or vertical options are required
     BOOL verticalCropBox = self.cropView.cropBoxAspectRatioIsPortrait;
     
@@ -1198,6 +1197,14 @@ static const CGFloat kTOCropViewControllerToolbarHeight = 44.0f;
     }
 }
 
+- (void)setAspectRatioAlwaysLockEnabled:(BOOL)aspectRatioAlwaysLockEnabled
+{
+    self.cropView.aspectRatioAlwaysLockEnabled = aspectRatioAlwaysLockEnabled;
+    if (aspectRatioAlwaysLockEnabled) {
+        self.aspectRatioLockEnabled = aspectRatioAlwaysLockEnabled;
+    }
+}
+
 - (void)setAspectRatioLockDimensionSwapEnabled:(BOOL)aspectRatioLockDimensionSwapEnabled
 {
     self.cropView.aspectRatioLockDimensionSwapEnabled = aspectRatioLockDimensionSwapEnabled;
@@ -1206,6 +1213,11 @@ static const CGFloat kTOCropViewControllerToolbarHeight = 44.0f;
 - (BOOL)aspectRatioLockEnabled
 {
     return self.cropView.aspectRatioLockEnabled;
+}
+
+- (BOOL)aspectRatioAlwaysLockEnabled
+{
+    return self.cropView.aspectRatioAlwaysLockEnabled;
 }
 
 - (void)setRotateButtonsHidden:(BOOL)rotateButtonsHidden
