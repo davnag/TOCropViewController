@@ -1051,6 +1051,11 @@ typedef NS_ENUM(NSInteger, TOCropViewOverlayEdge) {
     return CGRectGetWidth(cropFrame) < CGRectGetHeight(cropFrame);
 }
 
+- (BOOL)imageAspectRatioIsPortrait
+{
+    return self.imageSize.width < self.imageSize.height;
+}
+
 - (CGRect)imageCropFrame
 {
     CGSize imageSize = self.imageSize;

@@ -133,6 +133,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) BOOL cropBoxAspectRatioIsPortrait;
 
 /**
+ True when the height of the image is bigger than the width
+ */
+@property (nonatomic, readonly) BOOL imageAspectRatioIsPortrait;
+
+/**
  The rotation angle of the crop view (Will always be negative as it rotates in a counter-clockwise direction)
  */
 @property (nonatomic, assign) NSInteger angle;
