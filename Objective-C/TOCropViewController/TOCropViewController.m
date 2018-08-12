@@ -581,9 +581,10 @@ static const CGFloat kTOCropViewControllerToolbarHeight = 44.0f;
 
     NSMutableArray *presents = [NSMutableArray array];
 
-    [presents addObject: @(TOCropViewControllerAspectRatioPresetOriginal)];
+//    [presents addObject: @(TOCropViewControllerAspectRatioPresetOriginal)];
+    [presents addObject: @(TOCropViewControllerAspectRatioPresetPortrait)];
+    [presents addObject: @(TOCropViewControllerAspectRatioPresetLandscape)];
     [presents addObject: @(TOCropViewControllerAspectRatioPresetSquare)];
-    [presents addObject: @(TOCropViewControllerAspectRatioPreset4x3)];
 
     //Prepare the list that will be fed to the alert view/controller
     NSMutableArray *items = [NSMutableArray array];
@@ -676,6 +677,12 @@ static const CGFloat kTOCropViewControllerToolbarHeight = 44.0f;
         case TOCropViewControllerAspectRatioPresetSquare:
             title = NSLocalizedStringFromTableInBundle(@"Square", @"TOCropViewControllerLocalizable", resourceBundle, nil);
             break;
+        case TOCropViewControllerAspectRatioPresetPortrait:
+            title = NSLocalizedStringFromTableInBundle(@"Portrait", @"TOCropViewControllerLocalizable", resourceBundle, nil);
+            break;
+        case TOCropViewControllerAspectRatioPresetLandscape:
+            title = NSLocalizedStringFromTableInBundle(@"Landscape", @"TOCropViewControllerLocalizable", resourceBundle, nil);
+            break;
         case TOCropViewControllerAspectRatioPreset3x2:
             title = verticalCropBox ? @"2:3" : @"3:2";
             break;
@@ -708,18 +715,22 @@ static const CGFloat kTOCropViewControllerToolbarHeight = 44.0f;
         case 1:
             return TOCropViewControllerAspectRatioPresetSquare;
         case 2:
-            return TOCropViewControllerAspectRatioPreset3x2;
+            return TOCropViewControllerAspectRatioPresetPortrait;
         case 3:
-            return TOCropViewControllerAspectRatioPreset5x3;
+            return TOCropViewControllerAspectRatioPresetLandscape;
         case 4:
-            return TOCropViewControllerAspectRatioPreset4x3;
+            return TOCropViewControllerAspectRatioPreset3x2;
         case 5:
-            return TOCropViewControllerAspectRatioPreset5x4;
+            return TOCropViewControllerAspectRatioPreset5x3;
         case 6:
-            return TOCropViewControllerAspectRatioPreset7x5;
+            return TOCropViewControllerAspectRatioPreset4x3;
         case 7:
-            return TOCropViewControllerAspectRatioPreset16x9;
+            return TOCropViewControllerAspectRatioPreset5x4;
         case 8:
+            return TOCropViewControllerAspectRatioPreset7x5;
+        case 9:
+            return TOCropViewControllerAspectRatioPreset16x9;
+        case 10:
             return TOCropViewControllerAspectRatioPresetCustom;
         default:
             return TOCropViewControllerAspectRatioPresetOriginal;
@@ -738,6 +749,12 @@ static const CGFloat kTOCropViewControllerToolbarHeight = 44.0f;
             break;
         case TOCropViewControllerAspectRatioPresetSquare:
             aspectRatio = CGSizeMake(1.0f, 1.0f);
+            break;
+        case TOCropViewControllerAspectRatioPresetPortrait:
+            aspectRatio = CGSizeMake(3.0f, 4.0f);
+            break;
+        case TOCropViewControllerAspectRatioPresetLandscape:
+            aspectRatio = CGSizeMake(4.0f, 3.0f);
             break;
         case TOCropViewControllerAspectRatioPreset3x2:
             aspectRatio = CGSizeMake(3.0f, 2.0f);
@@ -769,7 +786,7 @@ static const CGFloat kTOCropViewControllerToolbarHeight = 44.0f;
                                 (self.aspectRatioLockEnabled && self.aspectRatioLockDimensionSwapEnabled);
     
     //If the image is a portrait shape, flip the aspect ratio to match
-    if (self.cropView.cropBoxAspectRatioIsPortrait &&
+    if (self.cropView.imageAspectRatioIsPortrait &&
         aspectRatioCanSwapDimensions)
     {
         CGFloat width = aspectRatio.width;
@@ -1192,7 +1209,7 @@ static const CGFloat kTOCropViewControllerToolbarHeight = 44.0f;
 {
     self.toolbar.clampButtonGlowing = aspectRatioLockEnabled;
     self.cropView.aspectRatioLockEnabled = aspectRatioLockEnabled;
-    if (!self.aspectRatioPickerButtonHidden) {
+    if (!self.aspectRatioPickerButtonHidden && self.aspectRatioAlwaysLockEnabled == false) {
         self.aspectRatioPickerButtonHidden = (aspectRatioLockEnabled && self.resetAspectRatioEnabled == NO);
     }
 }
@@ -1253,7 +1270,7 @@ static const CGFloat kTOCropViewControllerToolbarHeight = 44.0f;
 - (void)setResetAspectRatioEnabled:(BOOL)resetAspectRatioEnabled
 {
     self.cropView.resetAspectRatioEnabled = resetAspectRatioEnabled;
-    if (!self.aspectRatioPickerButtonHidden) {
+    if (!self.aspectRatioPickerButtonHidden && self.aspectRatioAlwaysLockEnabled == false) {
         self.aspectRatioPickerButtonHidden = (resetAspectRatioEnabled == NO && self.aspectRatioLockEnabled);
     }
 }
